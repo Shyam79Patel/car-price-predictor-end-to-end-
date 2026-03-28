@@ -29,7 +29,7 @@ The entire application - backend, model, and frontend  is packaged into a **Dock
 | Metric | Value |
 |---|---|
 | Algorithm | XGBoost Regressor |
-| R² Score | 0.941 |
+| R2 Score | 0.941 |
 | Dataset | CarDekho (Kaggle) |
 
 ---
