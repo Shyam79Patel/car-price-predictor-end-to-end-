@@ -42,15 +42,15 @@ The application is fully functional and containerized. Planned improvements incl
 
 1.Data & Modelling
 
-- Pandas, NumPy — data cleaning & preprocessing
-- Scikit-learn — encoding, train-test split
-- XGBoost — final regression model
+- Pandas, NumPy : data cleaning & preprocessing
+- Scikit-learn : encoding, train-test split
+- XGBoost : final regression model
 
 2.Backend
 
-- FastAPI — REST API framework
-- Pydantic v2 — request validation
-- Uvicorn — ASGI server
+- FastAPI : REST API framework
+- Pydantic v2 : request validation
+- Uvicorn : ASGI server
 
 3.Frontend
 
@@ -58,9 +58,9 @@ The application is fully functional and containerized. Planned improvements incl
 
 4.Storage
 
-- SQLite — prediction logging
+- SQLite : prediction logging
 
 5.Deployment
 
-- Docker — containerization
-- Docker Hub — image registry
+- Docker : containerization
+- Docker Hub : image registry
