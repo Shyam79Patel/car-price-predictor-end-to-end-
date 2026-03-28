@@ -48,19 +48,19 @@ The application is fully functional and containerized. Planned improvements incl
 
 2.Backend
 
--> FastAPI — REST API framework
--> Pydantic v2 — request validation
--> Uvicorn — ASGI server
+- FastAPI — REST API framework
+- Pydantic v2 — request validation
+- Uvicorn — ASGI server
 
 3.Frontend
 
--> HTML, CSS, JavaScript
+- HTML, CSS, JavaScript
 
 4.Storage
 
--> SQLite — prediction logging
+- SQLite — prediction logging
 
 5.Deployment
 
--> Docker — containerization
--> Docker Hub — image registry
+- Docker — containerization
+- Docker Hub — image registry
