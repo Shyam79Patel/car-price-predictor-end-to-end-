@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Used Car Price Predictor</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #2c3e50;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: #777;
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #555;
+    }
+
+    input, select {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #333;
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: #3498db;
+      background: white;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover { background: #2980b9; }
+    button:disabled { background: #aaa; cursor: not-allowed; }
+
+    .result-box {
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .result-box .label {
+      font-size: 0.85rem;
+      color: #777;
+      margin-bottom: 8px;
+    }
+
+    .result-box .price {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #27ae60;
+    }
+
+    .result-box .tags {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .result-box .tag {
+      background: #eaf4fd;
+      color: #2980b9;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+    }
+
+    .placeholder {
+      text-align: center;
+      color: #bbb;
+      padding: 10px 0;
+      font-size: 0.9rem;
+    }
+
+    .error {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #fdecea;
+      border-left: 4px solid #e74c3c;
+      border-radius: 6px;
+      color: #c0392b;
+      font-size: 0.85rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      background: #f8f9fa;
+      color: #555;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #eee;
+    }
+
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #444;
+    }
+
+    tr:hover td { background: #fafafa; }
+    .price-td { font-weight: 700; color: #27ae60; }
+
+    .empty {
+      text-align: center;
+      padding: 30px;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .history-header h2 { margin: 0; border: none; padding: 0; }
+
+    .refresh-btn {
+      width: auto;
+      margin: 0;
+      padding: 6px 16px;
+      font-size: 0.82rem;
+      background: #f0f0f0;
+      color: #555;
+      border-radius: 6px;
+    }
+
+    .refresh-btn:hover { background: #e0e0e0; }
+
+    @media (max-width: 560px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>🚗 Used Car Price Predictor</h1>
+  <p class="subtitle">Enter your car details below to get an estimated resale price.</p>
+
+  <!-- FORM -->
+  <div class="card">
+    <h2>Car Details</h2>
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Brand</label>
+        <input type="text" id="brand" placeholder="e.g. Mahindra" />
+      </div>
+
+      <div class="form-group">
+        <label>Model</label>
+        <input type="text" id="car_model" placeholder="e.g. Scorpio N" />
+      </div>
+
+      <div class="form-group">
+        <label>Vehicle Age (years)</label>
+        <input type="number" id="vehicle_age" placeholder="e.g. 5" min="0" max="30" />
+      </div>
+
+      <div class="form-group">
+        <label>KM Driven</label>
+        <input type="number" id="km_driven" placeholder="e.g. 45000" min="0" />
+      </div>
+
+      <div class="form-group">
+        <label>Seller Type</label>
+        <select id="seller_type">
+          <option value="">-- Select --</option>
+          <option>Dealer</option>
+          <option>Individual</option>
+          <option>Trustmark Dealer</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Fuel Type</label>
+        <select id="fuel_type">
+          <option value="">-- Select --</option>
+          <option>Petrol</option>
+          <option>Diesel</option>
+          <option>CNG</option>
+          <option>LPG</option>
+          <option>Electric</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Transmission</label>
+        <select id="transmission_type">
+          <option value="">-- Select --</option>
+          <option>Manual</option>
+          <option>Automatic</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Seats</label>
+        <input type="number" id="seats" placeholder="e.g. 5" min="2" max="10" />
+      </div>
+
+      <div class="form-group">
+        <label>Mileage (km/l)</label>
+        <input type="number" id="mileage" placeholder="e.g. 18.5" step="0.1" />
+      </div>
+
+      <div class="form-group">
+        <label>Engine (CC)</label>
+        <input type="number" id="engine" placeholder="e.g. 2200" />
+      </div>
+
+      <div class="form-group full">
+        <label>Max Power (BHP)</label>
+        <input type="number" id="max_power" placeholder="e.g. 200" step="0.1" />
+      </div>
+
+    </div>
+
+    <button onclick="predict()" id="predictBtn">Predict Price</button>
+    <div class="error" id="errorBox"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="card">
+    <h2>Predicted Price</h2>
+    <div id="resultArea">
+      <div class="placeholder">Your prediction will appear here.</div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="card">
+    <div class="history-header">
+      <h2>Prediction History</h2>
+      <button class="refresh-btn" onclick="loadHistory()">↻ Refresh</button>
+    </div>
+    <div id="historyArea">
+      <div class="empty">No predictions yet.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const API = 'http://127.0.0.1:8000';
+
+  async function predict() {
+    const btn = document.getElementById('predictBtn');
+    const errorBox = document.getElementById('errorBox');
+    errorBox.style.display = 'none';
+
+    const fields = {
+      brand:             document.getElementById('brand').value.trim(),
+      car_model:         document.getElementById('car_model').value.trim(),
+      vehicle_age:       parseInt(document.getElementById('vehicle_age').value),
+      km_driven:         parseInt(document.getElementById('km_driven').value),
+      seller_type:       document.getElementById('seller_type').value,
+      fuel_type:         document.getElementById('fuel_type').value,
+      transmission_type: document.getElementById('transmission_type').value,
+      mileage:           parseFloat(document.getElementById('mileage').value),
+      engine:            parseFloat(document.getElementById('engine').value),
+      max_power:         parseFloat(document.getElementById('max_power').value),
+      seats:             parseInt(document.getElementById('seats').value),
+    };
+
+    for (const [key, val] of Object.entries(fields)) {
+      if (!val && val !== 0) {
+        showError('Please fill in all fields.');
+        return;
+      }
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Predicting...';
+
+    try {
+      const res  = await fetch(`${API}/predict`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fields)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError(data.detail || 'Something went wrong.');
+        return;
+      }
+
+      const s = data.input_summary;
+      document.getElementById('resultArea').innerHTML = `
+        <div class="result-box">
+          <div class="label">Estimated Resale Price</div>
+          <div class="price">${data.predicted_price}</div>
+          <div class="tags">
+            <span class="tag">${s.brand}</span>
+            <span class="tag">${s.car_model}</span>
+            <span class="tag">${s.fuel_type}</span>
+            <span class="tag">${s.transmission_type}</span>
+            <span class="tag">${s.vehicle_age} years old</span>
+          </div>
+        </div>
+      `;
+
+      await loadHistory();
+
+    } catch(e) {
+      showError('Cannot connect to API. Make sure the server is running.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Predict Price';
+    }
+  }
+
+  async function loadHistory() {
+    try {
+      const res  = await fetch(`${API}/history`);
+      const data = await res.json();
+
+      if (data.predictions.length === 0) {
+        document.getElementById('historyArea').innerHTML =
+          '<div class="empty">No predictions yet.</div>';
+        return;
+      }
+
+      document.getElementById('historyArea').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Brand</th>
+              <th>Model</th>
+              <th>Fuel</th>
+              <th>Age</th>
+              <th>KM</th>
+              <th>Predicted Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.predictions.map(r => `
+              <tr>
+                <td>${r.id}</td>
+                <td>${r.brand}</td>
+                <td>${r.car_model}</td>
+                <td>${r.fuel_type}</td>
+                <td>${r.vehicle_age} yrs</td>
+                <td>${Number(r.km_driven).toLocaleString()}</td>
+                <td class="price-td">${r.predicted_price}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    } catch(e) {
+      console.log('History failed:', e);
+    }
+  }
+
+  function showError(msg) {
+    const box = document.getElementById('errorBox');
+    box.textContent = msg;
+    box.style.display = 'block';
+  }
+
+  loadHistory();
+</script>
+
+</body>
+</html>
