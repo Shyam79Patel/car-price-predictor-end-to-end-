@@ -5,7 +5,6 @@ An end-to-end machine learning application that estimates the resale price of a 
 <p align="center">
   <img width="200" height="400" alt="ecommerce-machine-learning-use-cases" src="https://github.com/user-attachments/assets/a87ea75b-adf4-4f06-8d95-c2635dd60e2c" />
 </p>
----
 
 ## Overview
 
