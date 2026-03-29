@@ -3,7 +3,7 @@
 An end-to-end machine learning application that estimates the resale price of a used car based on key vehicle attributes. The project covers the full pipeline from raw data to a live, containerized web application.
 
 
-<img width="430" height="200" alt="ecommerce-machine-learning-use-cases-300x167" src="[https://github.com/user-attachments/assets/11dec19b-a30b-4316-848f-d5fa5aad9bf5](https://github.com/user-attachments/assets/a87ea75b-adf4-4f06-8d95-c2635dd60e2c)" />
+<img width="430" height="200" alt="ecommerce-machine-learning-use-cases-300x167" src="[https://github.com/user-attachments/assets/a87ea75b-adf4-4f06-8d95-c2635dd60e2c]" />
 
 ---
 
